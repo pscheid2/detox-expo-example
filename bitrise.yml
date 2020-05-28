@@ -1,0 +1,56 @@
+---
+format_version: 1.1.0
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+trigger_map:
+  - push_branch: "*"
+    workflow: tests
+workflows:
+  _tests_setup:
+    steps:
+      - activate-ssh-key: {}
+      - git-clone:
+          inputs:
+            - clone_depth: ""
+          title: Git Clone Repo
+      - script:
+          inputs:
+            - content: |-
+                #!/bin/bash
+
+                yarn install
+          title: Install Yarn Packages
+    before_run:
+    after_run:
+  _detox_tests:
+    before_run: []
+    after_run: []
+    steps:
+      - script:
+          inputs:
+            - content: |-
+                #!/bin/bash
+
+                brew tap wix/brew
+                brew install applesimutils
+                ./e2e/downloadExpoBinaries.sh
+          title: Install Detox Utils
+      - script:
+          inputs:
+            - content: |-
+                #!/bin/bash
+
+                yarn ios &
+                sleep 30
+          title: Detox - Run Release App
+      - script:
+          inputs:
+            - content: |-
+                #!/bin/bash
+
+                detox test
+          title: Detox - Run E2E Tests
+  tests:
+    before_run:
+      - _tests_setup
+      - _detox_tests
+    after_run: []
