@@ -38,7 +38,8 @@
     "jest-expo": "~37.0.0",
     "detox": "^15.5.0",
     "detox-expo-helpers": "^0.6.0",
-    "expo-detox-hook": "^1.0.10"
+    "expo-detox-hook": "^1.0.10",
+    "expo-cli": "^3.17.18"
   },
   "detox": {
     "configurations": {
